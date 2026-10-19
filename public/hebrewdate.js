@@ -1,4 +1,4 @@
-// public/hebrewdate.js
+// hebrewdate.js
 (function() {
   'use strict';
 
