@@ -1,0 +1,13 @@
+{
+  "id": "nodebb-plugin-hebrewdate",
+  "name": "Hebrew Date (plugin)",
+  "description": "Replace displayed Gregorian dates with Hebrew dates (client + server using Hebcal API).",
+  "library": "./library.js",
+  "hooks": [
+    { "hook": "static:app.load", "method": "init" }
+  ],
+  "staticDirs": {
+    "static": "./public"
+  },
+  "version": "1.0.0"
+}
