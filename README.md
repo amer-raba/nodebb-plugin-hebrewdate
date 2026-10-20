@@ -4,7 +4,14 @@
 
 הוא עובד באמצעות:
 - סקריפט בצד הלקוח ב-`public/hebrewdate.js` שסורק תגיות `time`/`span` ומאחד תאריכים.
-- בקשה POST ל-`/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> ��אריך עברי באמצעות Hebcal API.
+- בקשה POST ל-`/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> תאריך עברי באמצעות Hebcal API.
+
+## הגבלות ותכונות אבטחה
+- לכל בקשה מוגבל מקסימום 100 תאריכים.
+- המרה מבוצעת ב־4 בקשות במקביל לכל היותר.
+- יש מטמון במטמון זיכרון (TTL של שעה) כדי למנוע חישוב חוזר.
+- אפשר להשבית את ה-API החיצוני על ידי הגדרת משתנה סביבה: `NODEBB_HEBREWDATE_REMOTE=false`.
+- בקלט לא תקין מוחזר כ־400 עם הודעה כללית, ולא עם שגיאת שרת פנימית.
 
 ## התקנה
 1. העתק את התיקייה של התוסף לתוך `node_modules` בתוך שורש NodeBB, או שמור אותו במקום המתאים לפריסה שלך.
@@ -19,13 +26,15 @@
    ./nodebb restart
    ```
 
-## הערות
-- ה-plugin כולל את ה-script עצמו דרך `plugin.json` ולכן אין צורך להוסיף אותו ידנית דרך `Custom Header HTML`.
-- אם יש צורך בבדיקת ידנית, ניתן להפעיל את ה-script דרך `Admin -> Appearance -> Custom Header HTML` עם:
-  ```html
-  <script src="/plugins/nodebb-plugin-hebrewdate/static/hebrewdate.js"></script>
-  ```
+## הטעינה האוטומטית
+ה-plugin טוען את ה-script אוטומטית דרך `plugin.json` ו-`scripts`, כך שאין צורך להוסיף אותו ידנית לכותרת האתר.
+
+אם תרצה עדיין להוסיף ידנית, אפשר להשתמש ב:
+```html
+<script src="/plugins/nodebb-plugin-hebrewdate/static/hebrewdate.js"></script>
+```
 
 ## תצורה
 - התוסף משתמש ב-Hebcal API לצורך המרה של תאריכים.
-- אם Hebcal אינו זמין, הוא נשאר על התאריך המקורי במקום להתרסק.
+- אם Hebcal אינו זמין, הוא ישאר על התאריך המקורי במקום להתרסק.
+- תאריך נשמר באמצעות תצורת אזור זמן מקומי כדי למנוע שגיאת `toISOString()` בעת חישוב תאריך יום לפני/אחרי.
