@@ -1,26 +1,31 @@
-# nodebb-node_modules-nodebb-plugin-hebrewdate
 # nodebb-plugin-hebrewdate
 
 תוסף פשוט ל-NodeBB שמחליף תצוגת תאריכים לגרסה עברית.
 
 הוא עובד באמצעות:
-- סקריפט בצד הלקוח (public/hebrewdate.js) שסורק תגיות <time> ומקבץ תאריכים.
-- קריאת POST לנתיב `/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> תאריך עברי (ממיר בעזרת Hebcal API).
+- סקריפט בצד הלקוח ב-`public/hebrewdate.js` שסורק תגיות `time`/`span` ומאחד תאריכים.
+- בקשה POST ל-`/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> ��אריך עברי באמצעות Hebcal API.
 
-התקנה
-1. העתק את התיקייה של התוסף לתיקיית node_modules בתוך root של NodeBB או שמור במקום שתבחר ואז רשם את התוסף:
-   - אופציה מהירה: העתק את התיקייה כ-nodebb-plugin-hebrewdate ל-nodebb/node_modules/
-2. התקן תלותיות (אם צריך) מתוך root של NodeBB:
+## התקנה
+1. העתק את התיקייה של התוסף לתוך `node_modules` בתוך שורש NodeBB, או שמור אותו במקום המתאים לפריסה שלך.
+2. התקן את התלות:
+   ```bash
    cd /path/to/nodebb
    npm install
-   (אם העברת את התיקייה ל-node_modules, ה-root npm install יתקין את axios בתלות הכללית)
-3. בניית NodeBB והפעלה מחדש:
+   ```
+3. בנה והפעל מחדש:
+   ```bash
    ./nodebb build
    ./nodebb restart
+   ```
 
-הוספת הסקריפט ל-frontend
-- הדרך הכי פשוטה: Admin -> Appearance -> Custom Header HTML והדבק:
+## הערות
+- ה-plugin כולל את ה-script עצמו דרך `plugin.json` ולכן אין צורך להוסיף אותו ידנית דרך `Custom Header HTML`.
+- אם יש צורך בבדיקת ידנית, ניתן להפעיל את ה-script דרך `Admin -> Appearance -> Custom Header HTML` עם:
+  ```html
   <script src="/plugins/nodebb-plugin-hebrewdate/static/hebrewdate.js"></script>
+  ```
 
-- לחלופין, אם התוסף מותקן נכון ו-NodeBB משרת staticDirs, הנתיב יהיה:
-  /plugins/nodebb-plugin-hebrewdate/static/hebrewdate.js
+## תצורה
+- התוסף משתמש ב-Hebcal API לצורך המרה של תאריכים.
+- אם Hebcal אינו זמין, הוא נשאר על התאריך המקורי במקום להתרסק.

@@ -1,27 +1,60 @@
-// library.js
+'use strict';
+
 const axios = require('axios');
 
-module.exports = {
-  init: function(params, callback) {
-    const router = params.router;
+function normalizeDateKey(input) {
+  if (input === null || input === undefined) return null;
 
-    // API לקבלת המרות תאריכים (מקבל body: { dates: [ "YYYY-MM-DD", ... ] })
-    router.post('/api/plugins/hebrewdate/convert', async function(req, res) {
+  let value = String(input).trim();
+  if (!value) return null;
+
+  if (value.length > 10) {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) {
+      value = parsed.toISOString().slice(0, 10);
+    }
+  }
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : null;
+}
+
+function extractHebrewDate(data, fallback) {
+  if (!data || typeof data !== 'object') return fallback;
+
+  return (
+    data.hebrew ||
+    data.hdate ||
+    data.hebrewDate ||
+    data.hebrew_date ||
+    data.hebrew_text ||
+    fallback
+  );
+}
+
+module.exports = {
+  init: function (params, callback) {
+    const router = params && params.router;
+
+    if (!router || typeof router.post !== 'function') {
+      if (typeof callback === 'function') {
+        return callback();
+      }
+      return;
+    }
+
+    router.post('/api/plugins/hebrewdate/convert', async function (req, res) {
       try {
         const dates = Array.isArray(req.body && req.body.dates) ? req.body.dates : [];
-        const uniqueDates = [...new Set(dates)];
+        const uniqueDates = [...new Set(dates.map(normalizeDateKey).filter(Boolean))];
         const results = {};
 
-        await Promise.all(uniqueDates.map(async (d) => {
-          // קו פרוטוקול: אם התקבל מחרוזת ISO מלאה, נחלץ את ה-YYYY-MM-DD
-          let dateStr = d;
-          if (d && d.length > 10) {
-            const dt = new Date(d);
-            if (!isNaN(dt)) dateStr = dt.toISOString().slice(0,10);
-          }
+        if (!uniqueDates.length) {
+          return res.json({ success: true, dates: results });
+        }
 
+        await Promise.all(uniqueDates.map(async (dateStr) => {
           try {
-            const resp = await axios.get('https://www.hebcal.com/converter', {
+            const response = await axios.get('https://www.hebcal.com/converter', {
               params: {
                 cfg: 'json',
                 date: dateStr,
@@ -29,24 +62,22 @@ module.exports = {
               },
               timeout: 5000
             });
-            // Hebcal מחזיר שדה 'hebrew' במבנה JSON
-            if (resp.data && resp.data.hebrew) {
-              results[d] = resp.data.hebrew;
-            } else {
-              results[d] = dateStr;
-            }
+
+            const converted = extractHebrewDate(response && response.data, dateStr);
+            results[dateStr] = converted;
           } catch (err) {
-            // במקרה של כשל, נשאיר התאריך המקורי
-            results[d] = dateStr;
+            results[dateStr] = dateStr;
           }
         }));
 
-        res.json({ success: true, dates: results });
+        return res.json({ success: true, dates: results });
       } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        return res.status(500).json({ success: false, error: err && err.message ? err.message : 'Unknown error' });
       }
     });
 
-    if (typeof callback === 'function') callback();
+    if (typeof callback === 'function') {
+      callback();
+    }
   }
 };
