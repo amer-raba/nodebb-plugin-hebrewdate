@@ -2,7 +2,7 @@
 
 תוסף פשוט ל-NodeBB שמחליף תצוגת תאריכים לגרסה עברית.
 
-הוא עובד באמצעות:
+הוא עו��ד באמצעות:
 - סקריפט בצד הלקוח ב-`public/hebrewdate.js` שסורק תגיות `time`/`span` ומאחד תאריכים.
 - בקשה POST ל-`/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> תאריך עברי באמצעות Hebcal API.
 
@@ -14,6 +14,16 @@
 - בקלט לא תקין מוחזר כ־400 עם הודעה כללית, ולא עם שגיאת שרת פנימית.
 
 ## התקנה
+
+### דרך npm (התקנה ישירה מה-GitHub)
+```bash
+cd /path/to/nodebb
+npm install git+https://github.com/amer-raba/nodebb-plugin-hebrewdate.git
+./nodebb build
+./nodebb restart
+```
+
+### דרך תיקייה ידנית
 1. העתק את התיקייה של התוסף לתוך `node_modules` בתוך שורש NodeBB, או שמור אותו במקום המתאים לפריסה שלך.
 2. התקן את התלות:
    ```bash
