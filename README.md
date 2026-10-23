@@ -2,9 +2,32 @@
 
 תוסף פשוט ל-NodeBB שמחליף תצוגת תאריכים לגרסה עברית.
 
-הוא עו��ד באמצעות:
+הוא עומד באמצעות:
 - סקריפט בצד הלקוח ב-`public/hebrewdate.js` שסורק תגיות `time`/`span` ומאחד תאריכים.
 - בקשה POST ל-`/api/plugins/hebrewdate/convert` שמחזירה מיפוי תאריך לועזי -> תאריך עברי באמצעות Hebcal API.
+
+## למה התוסף לא מופיע ברשימת התוספים של NodeBB?
+
+ה-repository ב-GitHub הוא רק המקור של התוסף, ולא ה-plugin שכבר מותקן בסביבת ה-NodeBB שלך.
+NodeBB בודק תוספים שמותקנים בתוך פרויקט ה-NodeBB עצמו, בדרך כלל ב-`node_modules` או במיקום התוסף של ההתקנה, ולא רק במאגר GitHub.
+
+לכן, גם אם יש `plugin.json`, `library.js` ו-`package.json` ב-GitHub, התוסף לא יופיע באדמין של NodeBB עד שהוא יותקן, נבנה מחדש, וירוץ בתוך ההתקנה המקומית של ה-NodeBB.
+
+הסיבות הנפוצות הן:
+- התוסף לא הותקן בתוך ה-NodeBB (`npm install ...` לא בוצע)
+- לא הרצת `./nodebb build` לאחר ההתקנה
+- לא restarted את השרת לאחר ההתקנה
+- התוסף מותקן במקום שונה מהתיקייה שבה NodeBB מחפש plugins
+
+### דוגמה נכונה להתקנה
+```bash
+cd /path/to/nodebb
+npm install git+https://github.com/amer-raba/nodebb-plugin-hebrewdate.git
+./nodebb build
+./nodebb restart
+```
+
+אם המערכת רצה מ-NodeBB, התוסף אמור להיטען על פי `plugin.json` ולופלוט בממשק התוספים לאחר build ו-restart.
 
 ## הגבלות ותכונות אבטחה
 - לכל בקשה מוגבל מקסימום 100 תאריכים.
