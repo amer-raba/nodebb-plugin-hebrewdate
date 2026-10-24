@@ -1,7 +1,7 @@
 {
   "name": "nodebb-plugin-hebrewdate",
-  "version": "1.0.1",
-  "description": "NodeBB plugin to display Hebrew dates instead of Gregorian dates",
+  "version": "1.0.2",
+  "description": "NodeBB plugin that replaces Gregorian dates with Hebrew dates using the Hebcal API.",
   "main": "library.js",
   "author": "amer-raba",
   "license": "MIT",
@@ -9,12 +9,18 @@
     "type": "git",
     "url": "git+https://github.com/amer-raba/nodebb-plugin-hebrewdate.git"
   },
+  "homepage": "https://github.com/amer-raba/nodebb-plugin-hebrewdate",
+  "bugs": {
+    "url": "https://github.com/amer-raba/nodebb-plugin-hebrewdate/issues"
+  },
   "keywords": [
     "nodebb",
     "plugin",
     "hebrew",
     "date",
-    "hebrewdate"
+    "hebrew-date",
+    "hebrewdate",
+    "nodebb-plugin"
   ],
   "files": [
     "plugin.json",
@@ -24,6 +30,9 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "axios": "^1.7.9"
