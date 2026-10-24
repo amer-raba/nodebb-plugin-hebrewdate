@@ -1,7 +1,7 @@
 {
   "id": "nodebb-plugin-hebrewdate",
   "name": "Hebrew Date (plugin)",
-  "description": "Replace displayed Gregorian dates with Hebrew dates using the Hebcal API.",
+  "description": "Replace displayed Gregorian dates with Hebrew dates and optionally close the forum during Shabbat.",
   "library": "./library.js",
   "hooks": [
     { "hook": "static:app.load", "method": "init" }
@@ -12,5 +12,5 @@
   "staticDirs": {
     "static": "./public"
   },
-  "version": "1.0.1"
+  "version": "1.1.0"
 }
